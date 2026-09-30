@@ -3,17 +3,18 @@ const {getData, delayRead, loadCache} = require("../controller/controller")
 
 const router = express.Router();
 
-router.use(async (req,res,next) => {
-    await delayRead()
-    next()
-})
-
 let cache = {}
+let loaded = {}
 
 router.get('/', async (req,res) => {
     try{
-        const loaded = await loadCache()
-        cache = loaded.cache
+        if (!cache["1"]){
+            loaded = await loadCache()
+            cache = loaded.cache
+            res.json(loaded.data)
+            return
+        }
+
         res.json(loaded.data)
     } catch (err) {
         console.log(err)
@@ -29,10 +30,11 @@ router.get('/:id', async (req,res) => {
             return
         }
 
-        cache = await loadCache()
-    
+        loaded = await loadCache()
+        cache = loaded.cache
+
         res.json(cache[itemId])
-        
+
     } catch (err) {
         console.log(err)
     }

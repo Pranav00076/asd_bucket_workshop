@@ -20,6 +20,7 @@ async function delayRead() {
 
 async function loadCache() {
     try{
+        await delayRead()
         let data = await getData();
         data = JSON.parse(data)
         for (let obj of data){
